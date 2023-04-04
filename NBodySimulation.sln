@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33516.290
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NBodySimulation", "NBodySimulation.csproj", "{4E1FF3F0-0186-4BBC-B8D2-1BF3B1150ED6}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4E1FF3F0-0186-4BBC-B8D2-1BF3B1150ED6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E1FF3F0-0186-4BBC-B8D2-1BF3B1150ED6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4E1FF3F0-0186-4BBC-B8D2-1BF3B1150ED6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4E1FF3F0-0186-4BBC-B8D2-1BF3B1150ED6}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B351B340-85B2-47D0-B3E4-82A90A1B8F50}
+	EndGlobalSection
+EndGlobal
