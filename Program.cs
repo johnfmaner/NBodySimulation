@@ -11,17 +11,21 @@ namespace NBodySimulation
             float timeStep; // time differential 
             float n; // number of steps to take in simulation 
 
-            n = 100; 
+            n = 1000; 
             timeStep = tSimulation / n;
 
             //initalize a new body with position, velocity, mass, and dt 
-            Body planet = new Body(new Vector3(0, 0, 0), new Vector3(0, 0, 0), 100, timeStep);
-            Body rock = new Body(new Vector3(0, 0, 0), new Vector3(0, 100, 0), 1, timeStep);
+            Body planet = new Body(new Vector3(0, 0, 0), new Vector3(0, 0, 0), 1000, timeStep);
+            Body rock = new Body(new Vector3(-10, 0, 0), new Vector3(0, 10, 0), 1, timeStep);
+
+            // initial conditions for an orbit with GravityConst = 1
+            //Body planet = new Body(new Vector3(0, 0, 0), new Vector3(0, 0, 0), 1000, timeStep);
+            //Body rock = new Body(new Vector3(-10, 0, 0), new Vector3(0, 10, 0), 1, timeStep);
 
             // perform the simulation 
             while (t <= tSimulation)
             {
-                Console.WriteLine("{0},{1},{2},{3}",t,rock.r.X, rock.r.Y, rock.r.Z);
+                Console.WriteLine("{0}, {1}, {2}, {3}, {4}",t,rock.r.X,rock.r.Y,planet.r.X,planet.r.Y);
                 planet.EulerStep(rock);
                 rock.EulerStep(planet);
                 t += timeStep;  
@@ -52,9 +56,13 @@ namespace NBodySimulation
             // - g*M1*M2/(r12)^2 
             // a = V/dt = f/m -> v = f*dt/m
 
-            const float GravityConst = 1;
+            const float GravityConst = 1 ;
 
-            v = dt*(-1f*GravityConst*externalBody.m)/(externalBody.r - r).LengthSquared()*Vector3.Normalize(externalBody.r - r); 
+            Vector3 r21 =  r - externalBody.r;
+            Vector3 r21Hat = Vector3.Normalize(r21);
+            float r21LengthSquared = r21.LengthSquared();
+
+            v += (dt*(-1f*GravityConst*externalBody.m)/ r21LengthSquared) * r21Hat; 
         }
 
         public void EulerStep(Body externalBody)
