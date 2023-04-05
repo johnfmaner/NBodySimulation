@@ -45,6 +45,7 @@ namespace NBodySimulation
         public void Accelerate()
         {
             // to do: update velocity 
+            // need to accept all objects in the simulaton, get net force, then calculate new velocities 
         }
 
         public void EulerStep()
