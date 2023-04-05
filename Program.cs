@@ -14,14 +14,16 @@ namespace NBodySimulation
             n = 100; 
             timeStep = tSimulation / n;
 
-            //initalize a new body 
-            Body planet = new Body(new Vector3(0, 0, 0), new Vector3(1, 0, 0), 100, timeStep);
+            //initalize a new body with position, velocity, mass, and dt 
+            Body planet = new Body(new Vector3(0, 0, 0), new Vector3(0, 0, 0), 100, timeStep);
+            Body rock = new Body(new Vector3(0, 0, 0), new Vector3(0, 100, 0), 1, timeStep);
 
             // perform the simulation 
             while (t <= tSimulation)
             {
-                Console.WriteLine("{0},{1},{2},{3}",t,planet.r.X,planet.r.Y,planet.r.Z);
-                planet.EulerStep();
+                Console.WriteLine("{0},{1},{2},{3}",t,rock.r.X, rock.r.Y, rock.r.Z);
+                planet.EulerStep(rock);
+                rock.EulerStep(planet);
                 t += timeStep;  
             }
         }
@@ -42,19 +44,23 @@ namespace NBodySimulation
             this.dt = dt;
         }
 
-        public void Accelerate()
+        public void Accelerate(Body externalBody) 
         {
-            // to do: update velocity 
-            // need to accept all objects in the simulaton, get net force, then calculate new velocities 
+            // accept a Body within this Method, externalBody
+
+            // F= M/A -> A = F/M
+            // - g*M1*M2/(r12)^2 
+            // a = V/dt = f/m -> v = f*dt/m
+
+            const float GravityConst = 1;
+
+            v = dt*(-1f*GravityConst*externalBody.m)/(externalBody.r - r).LengthSquared()*Vector3.Normalize(externalBody.r - r); 
         }
 
-        public void EulerStep()
+        public void EulerStep(Body externalBody)
         {
-            Accelerate(); // update velocity by applying acceleration 
+            Accelerate(externalBody); // update velocity by applying acceleration 
             r += v * dt; // update position vector by multiplying new velocity by dt 
         }
-
-
-
     }
 }
