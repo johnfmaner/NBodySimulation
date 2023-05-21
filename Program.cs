@@ -8,7 +8,7 @@ namespace NBodySimulation
         {
             // simulation parameters 
             float simulationTime = 0; // simulation time  
-            float simulationDuration = 10; // total time to run this simulation 
+            float simulationDuration = 100; // total time to run this simulation 
             float timeStep; // time differential 
             int simulationTimeSteps; // number of steps to take in simulation 
             int simulationBodyCount; // number of bodies, including the sun 
@@ -24,7 +24,7 @@ namespace NBodySimulation
 
             // configure simulation parameters 
             // to do: move to command line arguments 
-            simulationBodyCount = 1;
+            simulationBodyCount = 100;
             simulationHasSun = false;
             simulationTimeSteps = 1000;
             timeStep = simulationDuration / simulationTimeSteps;  
@@ -35,11 +35,48 @@ namespace NBodySimulation
                 simulationBodies.Add(new Body(sunPosition, sunVelocity, sunMass, timeStep, sunBodyId, sunRadius));
             }
 
+            /*Random rnd = new Random();
+            for (int i = 2; i < simulationBodyCount + 2; i++)
+            {
+                float randomX = (float)rnd.Next(-20, 20);
+                float randomY = (float)rnd.Next(-20, 20);
+                float randomVx = (float)rnd.Next(-1, 1);
+                float randomVy = (float)rnd.Next(-1, 1);
+                float randomMass = (float)rnd.Next(1, 5);
+
+                simulationBodies.Add(new Body(
+                        new Vector3(randomX, randomY, 0),
+                        new Vector3(randomVx, randomVy, 0),
+                        randomMass,
+                        timeStep,
+                        i,
+                        1));
+
+            }*/
+
+            // to do: clean this up
+            // remove bodies which are going to collide on first time step 
+
             // initalize more bodies 
-            simulationBodies.Add(new Body(new Vector3(-1.5f, 1.5f, 0), new Vector3(10f, -10f, 0), 1f, timeStep, 2, 1));
-            simulationBodies.Add(new Body(new Vector3(-1.5f, -1.5f, 0), new Vector3(10f, 10f, 0), 1f, timeStep, 3, 1));
+            simulationBodies.Add(new Body(new Vector3(-10f,10f, 0), new Vector3(10f, -10f, 0), 1f, timeStep, 2, 1));
+            simulationBodies.Add(new Body(new Vector3(-10f, -10f, 0), new Vector3(10f, 10f, 0), 1f, timeStep, 3, 1));
             //simulationBodies.Add(new Body(new Vector3(-2.5f, 0, 0), new Vector3(0, 15f, 0), 1f, timeStep, 3, 1));
             //simulationBodies.Add(new Body(new Vector3(-20f, -10f, 0), new Vector3(1f, 2f, 0), 0.01f, timeStep, 4, 1));
+
+            List<Body> earlyCollisionBodiesToRemove = new List<Body>();
+
+            foreach (Body body in simulationBodies)
+            {
+                body.CollisionCheck(simulationBodies);
+
+                if (body.isCollided)
+                {
+                    earlyCollisionBodiesToRemove.Add(body); // tag the colliding body for deletion 
+                }
+            }
+
+            simulationBodies.RemoveAll(x => earlyCollisionBodiesToRemove.Contains(x)); //remove any bodies which collided 
+            simulationBodyCount = simulationBodies.Count(); // update count of simulation bodies 
 
             // perform the simulation 
             while (simulationTime <= simulationDuration && simulationBodyCount > 0)
@@ -49,13 +86,11 @@ namespace NBodySimulation
                 foreach (Body workingBody in simulationBodies.ToList())
                 {
                     Console.WriteLine(
-                        "{0},{1},{2},{3},{4},{5}",
+                        "{0},{1},{2},{3}",
                         simulationTime,
                         workingBody.id,
                         workingBody.positionVector.X,
-                        workingBody.positionVector.Y,
-                        workingBody.isCollided,
-                        workingBody.collidedWithId);
+                        workingBody.positionVector.Y);
 
                     workingBody.EulerStep(simulationBodies); // move the body using an Euler step 
 
@@ -69,6 +104,7 @@ namespace NBodySimulation
                     }
 
                     simulationBodies.RemoveAll(x => collidingBodiesToRemove.Contains(x)); //remove any bodies which collided 
+                    collidingBodiesToRemove.Clear(); 
                     simulationBodyCount = simulationBodies.Count(); // update count of simulation bodies 
                     simulationTime += timeStep; // advance time 
                 }
